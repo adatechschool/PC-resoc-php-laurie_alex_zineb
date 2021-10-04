@@ -74,25 +74,20 @@
                 }
                 $user = $lesInformations->fetch_assoc();
 
-                /**
-                 * Etape 4: à vous de jouer
-                 */
-                //@todo: afficher le résultat de la ligne ci dessous, remplacer les valeurs ci-après puiseffacer la ligne ci-dessous
-                echo "<pre>" . print_r($user, 1) . "</pre>";
                 ?>                
                 <article class='parameters'>
                     <h3>Mes paramètres</h3>
                     <dl>
                         <dt>Pseudo</dt>
-                        <dd>Félicie</dd>
+                        <dd><?php echo print_r($user['alias'],50)?></dd>
                         <dt>Email</dt>
-                        <dd>felicie@test.org</dd>
+                        <dd><?php echo print_r($user['email'],50)?></dd>
                         <dt>Nombre de message</dt>
-                        <dd>42</dd>
+                        <dd><?php echo print_r($user['totalpost'],50)?></dd>
                         <dt>Nombre de "J'aime" donnés </dt>
-                        <dd>12</dd>
+                        <dd><?php echo print_r($user['totalgiven'],50)?></dd>
                         <dt>Nombre de "J'aime" reçus</dt>
-                        <dd>53</dd>
+                        <dd><?php echo print_r($user['totalrecieved'],50)?></dd>
                     </dl>
 
                 </article>
