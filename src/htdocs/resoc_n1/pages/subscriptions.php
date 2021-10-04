@@ -52,14 +52,20 @@
                         . "GROUP BY `users`.`id`"
                 ;
                 $lesInformations = $mysqli->query($laQuestionEnSql);
-                // Etape 4: à vous de jouer
-                //@todo: faire la boucle while de parcours des abonnés et mettre les bonnes valeurs ci dessous 
-                ?>
-                <article>
+                while ($user = $lesInformations->fetch_assoc())
+                {
+
+                    
+                    ?>                
+                    <article>
                     <img src="user.jpg" alt="blason"/>
-                    <h3>Alexadndra</h3>
-                    <p>id:654</p>                    
-                </article>
+                    <h3><?php echo $user['alias']?></h3>
+                    <p>id:<?php echo $user['id']?></p>                    
+                    </article>
+                   
+                    <?php } ?>
+                
+               
             </main>
         </div>
     </body>
