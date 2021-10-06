@@ -60,6 +60,7 @@
                     <p>Sur cette page vous trouverez tous les message des utilisatrices
                         auxquel est abonnée l'utilisatrice <?php echo $user['alias']?>
                         (n° <?php echo $_GET['user_id'] ?>)
+
                     </p>
 
                 </section>
@@ -72,6 +73,7 @@
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
                         . "`posts`.`created`,"
                         . "`users`.`alias` as author_name,  "
+                        . "`users`.`id`, "
                         . "count(`likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
                         . "FROM `followers` "
@@ -95,22 +97,23 @@
                  * A vous de retrouver comment faire la boucle while de parcours...
                  */
                                
-                while ($user = $lesInformations->fetch_assoc())
+                while ($post = $lesInformations->fetch_assoc())
                 {
 
                     
                     ?>                
                     <article>
                         <h3>
-                            <time ><?php echo $user['created']?></time>
+                            <time ><?php echo $post['created']?></time>
                         </h3>
-                        <address><?php echo $user['author_name']?></address>
+                        <address><a href="wall.php?user_id=<?php echo $post['id']?>"><?php echo $post['author_name']?></a></address>
+                        
                         <div>
-                            <p><?php echo $user['content']?></p>
+                            <p><?php echo $post['content']?></p>
                         </div>                                            
                         <footer>
-                            <small>♥ <?php echo $user['like_number']?></small>
-                            <a href="">#<?php echo $user['taglist']?></a>,
+                            <small>♥ <?php echo $post['like_number']?></small>
+                            <a href="">#<?php echo $post['taglist']?></a>,
                         </footer>
                     </article>
                    

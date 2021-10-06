@@ -58,7 +58,7 @@
                 {
                     ?>
                     <article>
-                        <h3>#<?php echo print_r($tag['label'],50)?></h3>
+                        <h3>#<?php echo $tag['label']?></h3>
                         <p>id:<?php echo print_r($tag['id'],50)?></p>
                         <nav>
                             <a href="tags.php?tag_id= <?php echo $tag['id']?>">Messages</a>

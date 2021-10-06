@@ -79,7 +79,7 @@
                     <h3>Mes paramètres</h3>
                     <dl>
                         <dt>Pseudo</dt>
-                        <dd><?php echo print_r($user['alias'],50)?></dd>
+                        <dd><a href="wall.php?user_id=<?php echo $user['id']?>"><?php echo $user['alias']?></a></dd>
                         <dt>Email</dt>
                         <dd><?php echo print_r($user['email'],50)?></dd>
                         <dt>Nombre de message</dt>

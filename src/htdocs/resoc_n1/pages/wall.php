@@ -51,8 +51,6 @@
                 $laQuestionEnSql = "SELECT * FROM `users` WHERE id=" . intval($userId);
                 $lesInformations = $mysqli->query($laQuestionEnSql);
                 $user = $lesInformations->fetch_assoc();
-               
-                echo "<pre>" . print_r($user, 1) . "</pre>";
                 ?>
                 <img src="user.jpg" alt="Portrait de l'utilisatrice"/>
                 <section>
