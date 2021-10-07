@@ -77,13 +77,16 @@ session_start();
                             
                         } else
                         {
-                            echo "Votre connexion est un succès : " . $user['alias'] . ".";
+                            echo "Votre connexion est un succès  ";
+ 
                             // Etape 7 : Se souvenir que l'utilisateur s'est connecté pour la suite
                             // documentation: https://www.php.net/manual/fr/session.examples.basic.php
                             $_SESSION['connected_id']=$user['id'];
                         }
                     }
-                    ?>                     
+                    ?>
+                    <a href='wall.php?user_id=<?php echo $_SESSION['connected_id'] ?>'><?php echo $user['alias']?></a>
+                                         
                     <form action="login.php" method="post">
                         <input type='hidden'name='???' value='achanger'>
                         <dl>
@@ -93,6 +96,7 @@ session_start();
                             <dd><input type='password'name='motpasse'></dd>
                         </dl>
                         <input type='submit'>
+
                     </form>
                     <p>
                         Pas de compte?

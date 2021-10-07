@@ -1,3 +1,6 @@
+<?php 
+session_start()
+?>
 <!doctype html>
 <html lang="fr">
     <head>
@@ -66,7 +69,7 @@
                  * Etape 3: récupérer tous les messages de l'utilisatrice
                  */
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
-                        . "`posts`.`created`,"
+                        . "`posts`.`created`," 
                         . "`users`.`alias` as author_name,  "
                         . "count(`likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
@@ -88,7 +91,6 @@
                 while ($post = $lesInformations->fetch_assoc())
                 {
 
-                    echo "<pre>" . print_r($post, 1) . "</pre>";
                     ?>                
                     <article>
                         <h3>
@@ -105,6 +107,45 @@
                     </article>
                 <?php } ?>
 
+<!-- ca commence ici -->
+
+                <article>
+                    <h2>Poster un message</h2>
+                    <?php
+                    // $_SESSION['connected_id']=$post['id'];
+                    $enCoursDeTraitement = isset($_POST['content']);
+                    if ($enCoursDeTraitement)
+                    {
+                        $postContent = $_POST['content'];
+                        $postContent = $mysqli->real_escape_string($postContent);
+                        $lInstructionSql = "INSERT INTO `posts` "
+                                . "(`id`, `user_id`, `content`, `created`, `parent_id`) "
+                                . "VALUES (NULL, "
+                                . "" . $userId . ", "
+                                . "'" . $postContent . "', "
+                                . "NOW(), "
+                                . "NULL);"
+                                . "";
+                    
+                        $ok = $mysqli->query($lInstructionSql);
+                        if ( ! $ok)
+                        {
+                            echo "Impossible d'ajouter le message: " . $mysqli->error;
+                        } else
+                        {
+                            echo "Message posté avec succés";
+                        }
+                    }
+                    ?>
+                    <form method="post">
+                    <input type='hidden' name= '???' value='achanger'>
+                    <div><label for='content'>Message</label></div>
+                    <br>
+                    <div><textarea name='content' placeholder="postez votre message ici"></textarea></div>
+                    <br>
+                    <input type='submit'>
+                    </form>
+                </article>
 
             </main>
         </div>
