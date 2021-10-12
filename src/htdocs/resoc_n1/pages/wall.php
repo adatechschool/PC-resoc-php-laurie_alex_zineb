@@ -13,23 +13,26 @@ session_start()
         <header>
             <img src="resoc.jpg" alt="Logo de notre réseau social"/>
             <nav id="menu">
-                <a href="news.php">Actualités</a>
-                <a href="wall.php?user_id=5">Mur</a>
-                <a href="feed.php?user_id=5">Flux</a>
-                <a href="tags.php?tag_id=1">Mots-clés</a>
+                <a href="news.php?user_id=<?php echo $_SESSION['connected_id']?>">Actualités</a>
+                <a href="wall.php?user_id=<?php echo $_SESSION['connected_id']?>">Mur</a>
+                <a href="feed.php?user_id=<?php echo $_SESSION['connected_id']?>">Flux</a>
+                <a href="tags.php?">Mots-clés</a>
             </nav>
             <nav id="user">
                 <a href="#">Profil</a>
                 <ul>
-                    <li><a href="settings.php?user_id=5">Paramètres</a></li>
-                    <li><a href="followers.php?user_id=5">Mes suiveurs</a></li>
-                    <li><a href="subscriptions.php?user_id=5">Mes abonnements</a></li>
+                    <li><a href="settings.php?user_id=<?php echo $_SESSION['connected_id']?>">Paramètres</a></li>
+                    <li><a href="followers.php?user_id=<?php echo $_SESSION['connected_id']?>">Mes suiveurs</a></li>
+                    <li><a href="subscriptions.php?user_id=<?php echo $_SESSION['connected_id']?>">Mes abonnements</a></li>
                 </ul>
 
             </nav>
         </header>
         <div id="wrapper">
+
             <?php
+             $userId = $_GET['user_id'];
+             $userConnected = $_SESSION['connected_id'];
             /**
              * Etape 1: Le mur concerne un utilisateur en particulier
              * La première étape est donc de trouver quel est l'id de l'utilisateur
@@ -37,7 +40,6 @@ session_start()
              * Documentation : https://www.php.net/manual/fr/reserved.variables.get.php
              * ... mais en résumé c'est une manière de passer des informations à la page en ajoutant des choses dans l'url
              */
-            $userId = $_GET['user_id'];
             ?>
             <?php
             /**
@@ -59,7 +61,7 @@ session_start()
                 <section>
                     <h3>Présentation</h3>
                     <p>Sur cette page vous trouverez tous les message de l'utilisatrice : <?php echo print_r($user['alias'],50)?>
-                        (n° <?php echo $_GET['user_id'] ?>)
+                        (n° <?php echo $userId ?>)
                     </p>
                 </section>
             </aside>
@@ -68,8 +70,23 @@ session_start()
                 /**
                  * Etape 3: récupérer tous les messages de l'utilisatrice
                  */
+                $enCoursDeTraitement = isset($_POST['post_id']);
+            if ($enCoursDeTraitement) {
+                $idAVerifier = $_POST['id'];
+                $lInstructionSql = "INSERT INTO `likes` "
+                    . "(`id`, `user_id`, `post_id`)"
+                    . "VALUES (NULL, "
+                    . $userConnected . ", "
+                    . $_POST['post_id'] . ")";
+
+                $ok = $mysqli->query($lInstructionSql);
+                if (!$ok) {
+                    echo "Impossible d'ajouter le like: " . $mysqli->error;
+                }
+            }
                 $laQuestionEnSql = "SELECT `posts`.`content`,"
                         . "`posts`.`created`," 
+                        . "`posts`.`id`, "
                         . "`users`.`alias` as author_name,  "
                         . "count(`likes`.`id`) as like_number,  "
                         . "GROUP_CONCAT(DISTINCT `tags`.`label`) AS taglist "
@@ -90,7 +107,20 @@ session_start()
 
                 while ($post = $lesInformations->fetch_assoc())
                 {
+                     
 
+                    $laQuestionEnSqlTags = "SELECT `tags` . `id`, "
+                    . " `tags`. `label` "
+                    . "FROM `posts_tags`"
+                    . "JOIN `tags` ON `tags`.`id` = `posts_tags`.`tag_id` "
+                    . "Where `post_id` =" . $post['id'];
+            //         SELECT tags.id, tags.label FROM posts_tags JOIN tags ON tags.id = posts_tags.tag_id WHERE post_id = 9;
+            
+            $lesInformationsTags = $mysqli->query($laQuestionEnSqlTags);
+            if ( ! $lesInformationsTags)
+                {
+                    echo("Échec de la requete : " . $mysqli->error);
+                }
                     ?>                
                     <article>
                         <h3>
@@ -99,16 +129,28 @@ session_start()
                         <address><?php echo $post['author_name']?></address>
                         <div>
                             <p><?php echo $post['content']?></p>
-                        </div>                                            
+                        </div>   
                         <footer>
+                        <form method="POST">
+                            <input type='hidden' name='post_id' value=<?= $post['id'] ?>>
+                            <input type='hidden' name='user_id' value=<?= $userConnected ?>>
+                            <input type="submit" value="like">
+                        </form>
+                        
                             <small>♥ <?php echo $post['like_number']?></small>
-                            <a href="">#<?php echo $post['taglist']?></a>,
+                           
+                        <?php while ($tag = $lesInformationsTags->fetch_assoc()){?>
+                            <a href="tags.php?tag_id=<?= $tag['id']?>">#<?php echo $tag['label']?>
+                            #</a>
+                            <?php }?>
                         </footer>
                     </article>
-                <?php } ?>
+                <?php }?>
 
-<!-- ca commence ici -->
-
+                <?php 
+                 
+                if($_SESSION['connected_id'] == $userId){
+                    ?>
                 <article>
                     <h2>Poster un message</h2>
                     <?php
@@ -137,7 +179,7 @@ session_start()
                         }
                     }
                     ?>
-                    <form method="post">
+                    <form action = "wall.php?user_id=<?php echo $_SESSION['connected_id']?>" method="post">
                     <input type='hidden' name= '???' value='achanger'>
                     <div><label for='content'>Message</label></div>
                     <br>
@@ -146,6 +188,7 @@ session_start()
                     <input type='submit'>
                     </form>
                 </article>
+               <?php }?>
 
             </main>
         </div>
