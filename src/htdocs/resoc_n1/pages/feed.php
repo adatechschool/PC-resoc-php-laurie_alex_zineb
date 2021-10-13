@@ -7,7 +7,7 @@ session_start()
 <head>
     <meta charset="utf-8">
     <title>ReSoC - Flux</title>
-    <meta name="author" content="Julien Falconnet">
+    <meta name="author" content="Laurie, Alex et Zineb">
     <link rel="stylesheet" href="style.css" />
     </head≠>
 
@@ -18,7 +18,7 @@ session_start()
             <a href="news.php?user_id=<?php echo $_SESSION['connected_id']?>">Actualités</a>
             <a href="wall.php?user_id=<?php echo $_SESSION['connected_id']?>">Mur</a>
             <a href="feed.php?user_id=<?php echo $_SESSION['connected_id']?>">Flux</a>
-            <a href="tags.php?user_id=<?php echo $_SESSION['connected_id']?>">Mots-clés</a>
+            <a href="tags.php?tag_id=1">Mots-clés</a>
         </nav>
         <nav id="user">
             <a href="#">Profil</a>
@@ -114,6 +114,18 @@ session_start()
             }
 
             while ($post = $lesInformations->fetch_assoc()) {
+                $laQuestionEnSqlTags = "SELECT `tags` . `id`, "
+                    . " `tags`. `label` "
+                    . "FROM `posts_tags`"
+                    . "JOIN `tags` ON `tags`.`id` = `posts_tags`.`tag_id` "
+                    . "Where `post_id` =" . $post['id'];
+            //         SELECT tags.id, tags.label FROM posts_tags JOIN tags ON tags.id = posts_tags.tag_id WHERE post_id = 9;
+            
+            $lesInformationsTags = $mysqli->query($laQuestionEnSqlTags);
+            if ( ! $lesInformationsTags)
+                {
+                    echo("Échec de la requete : " . $mysqli->error);
+                }
             ?>
                 <article>
 
@@ -133,7 +145,9 @@ session_start()
                         </form>
 
                         <small>♥ <?php echo $post['like_number'] ?></small>
-                        <a href="">#<?php echo $post['taglist'] ?></a>,
+                        <?php while ($tag = $lesInformationsTags->fetch_assoc()){?>
+                        <a href="tags.php?tag_id=<?= $tag['id']?>">#<?php echo $post['taglist'] ?></a>
+                        <?php }?>
                     </footer>
                 </article>
             <?php } ?>

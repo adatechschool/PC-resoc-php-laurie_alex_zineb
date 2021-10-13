@@ -6,7 +6,7 @@ session_start()
     <head>
         <meta charset="utf-8">
         <title>ReSoC - Mur</title> 
-        <meta name="author" content="Julien Falconnet">
+        <meta name="author" content="Laurie, Alex et Zineb">
         <link rel="stylesheet" href="style.css"/>
     </head>
     <body>
@@ -16,7 +16,7 @@ session_start()
                 <a href="news.php?user_id=<?php echo $_SESSION['connected_id']?>">Actualités</a>
                 <a href="wall.php?user_id=<?php echo $_SESSION['connected_id']?>">Mur</a>
                 <a href="feed.php?user_id=<?php echo $_SESSION['connected_id']?>">Flux</a>
-                <a href="tags.php?">Mots-clés</a>
+                <a href="tags.php?tag_id=1">Mots-clés</a>
             </nav>
             <nav id="user">
                 <a href="#">Profil</a>

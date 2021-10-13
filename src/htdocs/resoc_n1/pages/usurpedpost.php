@@ -1,12 +1,12 @@
 <?php
-session_start();
+session_start()
 ?>
 <!doctype html>
 <html lang="fr">
     <head>
         <meta charset="utf-8">
         <title>ReSoC - Post d'usurpateur</title> 
-        <meta name="author" content="Julien Falconnet">
+        <meta name="author" content="Laurie, Alex et Zineb">
         <link rel="stylesheet" href="style.css"/>
     </head>
     <body>
