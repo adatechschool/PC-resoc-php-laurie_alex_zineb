@@ -24,6 +24,8 @@ session_start()
                     <li><a href="settings.php?user_id=<?php echo $_SESSION['connected_id']?>">Paramètres</a></li>
                     <li><a href="followers.php?user_id=<?php echo $_SESSION['connected_id']?>">Mes suiveurs</a></li>
                     <li><a href="subscriptions.php?user_id=<?php echo $_SESSION['connected_id']?>">Mes abonnements</a></li>
+                    <li><a href="login.php?">Déconnection</a></li>
+                    
                 </ul>
 
             </nav>
@@ -63,9 +65,45 @@ session_start()
                     <p>Sur cette page vous trouverez tous les message de l'utilisatrice : <?php echo print_r($user['alias'],50)?>
                         (n° <?php echo $userId ?>)
                     </p>
+
+ <!-- on commence followers ici -->
+                    <?php 
+                    if($userConnected != $userId){
+                    ?>
+                        <form method="POST">
+                            <input type='hidden' name='followed_user_id' value=<?= $userId ?>>
+                            <input type='hidden' name='following_user_id' value=<?= $userConnected ?>>
+                            <input type="submit" value="follow">
+                        </form>
+                    <?php } ?>
+<!-- ca fini followers ici -->
                 </section>
             </aside>
             <main>
+<!-- on commence ici -->
+
+<?php
+
+            // $_SESSION['connected_id']=$post['id'];
+            $enCoursDeTraitementFollowers = isset($_POST['followed_user_id']);
+            echo 'toto1';
+            if ($enCoursDeTraitementFollowers) {
+                echo 'toto';
+                $idAVerifier = $_POST['id'];
+                $lInstructionSqlFollowers = "INSERT INTO `followers` "
+                    . "(`id`, `followed_user_id`, `following_user_id`)"
+                    . "VALUES (NULL, "
+                    . $userId . ", "
+                    . $userConnected . ")";
+
+                $ok = $mysqli->query($lInstructionSqlFollowers);
+                if (!$ok) {
+                    echo "Impossible de suivre cette personne: " . $mysqli->error;
+                }
+            }
+            ?>
+<!-- on fini ici -->
+
                 <?php
                 /**
                  * Etape 3: récupérer tous les messages de l'utilisatrice
@@ -140,8 +178,7 @@ session_start()
                             <small>♥ <?php echo $post['like_number']?></small>
                            
                         <?php while ($tag = $lesInformationsTags->fetch_assoc()){?>
-                            <a href="tags.php?tag_id=<?= $tag['id']?>">#<?php echo $tag['label']?>
-                            #</a>
+                            <a href="tags.php?tag_id=<?= $tag['id']?>">#<?php echo $tag['label']?></a>
                             <?php }?>
                         </footer>
                     </article>
