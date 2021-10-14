@@ -15,41 +15,31 @@ session_start()
     <header>
         <img src="resoc.jpg" alt="Logo de notre réseau social" />
         <nav id="menu">
-            <a href="news.php?user_id=<?php echo $_SESSION['connected_id']?>">Actualités</a>
-            <a href="wall.php?user_id=<?php echo $_SESSION['connected_id']?>">Mur</a>
-            <a href="feed.php?user_id=<?php echo $_SESSION['connected_id']?>">Flux</a>
+            <a href="news.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Actualités</a>
+            <a href="wall.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Mur</a>
+            <a href="feed.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Flux</a>
             <a href="tags.php?tag_id=1">Mots-clés</a>
         </nav>
         <nav id="user">
             <a href="#">Profil</a>
             <ul>
-                <li><a href="settings.php?user_id=<?php echo $_SESSION['connected_id']?>">Paramètres</a></li>
-                <li><a href="followers.php?user_id=<?php echo $_SESSION['connected_id']?>">Mes suiveurs</a></li>
-                <li><a href="subscriptions.php?user_id=<?php echo $_SESSION['connected_id']?>">Mes abonnements</a></li>
-                <li><a href="login.php?">Déconnection</a></li>
+                <li><a href="settings.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Paramètres</a></li>
+                <li><a href="followers.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Mes suiveurs</a></li>
+                <li><a href="subscriptions.php?user_id=<?php echo $_SESSION['connected_id'] ?>">Mes abonnements</a></li>
+                <li><a href="logOut.php?">Déconnexion</a></li>
             </ul>
 
         </nav>
     </header>
     <div id="wrapper">
         <?php
-
-        // Etape 1: Le mur concerne un utilisateur en particulier
-
         $userId = $_SESSION['connected_id'];
         ?>
         <?php
-        /**
-         * Etape 2: se connecter à la base de donnée
-         */
         $mysqli = new mysqli("localhost", "root", "root", "socialnetwork");
         ?>
-
         <aside>
             <?php
-            /**
-             * Etape 3: récupérer le nom de l'utilisateur
-             */
             $laQuestionEnSql = "SELECT * FROM `users` WHERE id=" . intval($userId);
             $lesInformations = $mysqli->query($laQuestionEnSql);
             $user = $lesInformations->fetch_assoc();
@@ -61,26 +51,19 @@ session_start()
                 <p>Sur cette page vous trouverez tous les message des utilisatrices
                     auxquel est abonnée l'utilisatrice <?php echo $user['alias'] ?>
                     (n° <?php echo $userId ?>)
-
                 </p>
-
             </section>
         </aside>
         <main>
             <?php
-
-            // $_SESSION['connected_id']=$post['id'];
             $enCoursDeTraitement = isset($_POST['post_id']);
-            echo 'toto1';
             if ($enCoursDeTraitement) {
-                echo 'toto';
                 $idAVerifier = $_POST['id'];
                 $lInstructionSql = "INSERT INTO `likes` "
                     . "(`id`, `user_id`, `post_id`)"
                     . "VALUES (NULL, "
                     . $userId . ", "
                     . $_POST['post_id'] . ")";
-
                 $ok = $mysqli->query($lInstructionSql);
                 if (!$ok) {
                     echo "Impossible d'ajouter le like: " . $mysqli->error;
@@ -89,9 +72,6 @@ session_start()
             ?>
 
             <?php
-            /**
-             * Etape 3: récupérer tous les messages des abonnements
-             */
             $laQuestionEnSql = "SELECT `posts`.`content`,"
                 . "`posts`.`created`,"
                 . "`users`.`alias` as author_name,  "
@@ -112,28 +92,22 @@ session_start()
             if (!$lesInformations) {
                 echo ("Échec de la requete : " . $mysqli->error);
             }
-
             while ($post = $lesInformations->fetch_assoc()) {
                 $laQuestionEnSqlTags = "SELECT `tags` . `id`, "
                     . " `tags`. `label` "
                     . "FROM `posts_tags`"
                     . "JOIN `tags` ON `tags`.`id` = `posts_tags`.`tag_id` "
                     . "Where `post_id` =" . $post['id'];
-            //         SELECT tags.id, tags.label FROM posts_tags JOIN tags ON tags.id = posts_tags.tag_id WHERE post_id = 9;
-            
-            $lesInformationsTags = $mysqli->query($laQuestionEnSqlTags);
-            if ( ! $lesInformationsTags)
-                {
-                    echo("Échec de la requete : " . $mysqli->error);
+                $lesInformationsTags = $mysqli->query($laQuestionEnSqlTags);
+                if (!$lesInformationsTags) {
+                    echo ("Échec de la requete : " . $mysqli->error);
                 }
             ?>
                 <article>
-
                     <h3>
                         <time><?php echo $post['created'] ?></time>
                     </h3>
                     <address><a href="wall.php?user_id=<?php echo $post['usersId'] ?>"><?php echo $post['author_name'] ?></a></address>
-
                     <div>
                         <p><?php echo $post['content'] ?></p>
                     </div>
@@ -143,11 +117,10 @@ session_start()
                             <input type='hidden' name='user_id' value=<?= $userId ?>>
                             <input type="submit" value="like">
                         </form>
-
                         <small>♥ <?php echo $post['like_number'] ?></small>
-                        <?php while ($tag = $lesInformationsTags->fetch_assoc()){?>
-                        <a href="tags.php?tag_id=<?= $tag['id']?>">#<?php echo $post['taglist'] ?></a>
-                        <?php }?>
+                        <?php while ($tag = $lesInformationsTags->fetch_assoc()) { ?>
+                            <a href="tags.php?tag_id=<?= $tag['id'] ?>">#<?php echo $post['taglist'] ?></a>
+                        <?php } ?>
                     </footer>
                 </article>
             <?php } ?>

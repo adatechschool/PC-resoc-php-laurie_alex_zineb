@@ -12,29 +12,15 @@ session_start()
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body>
+<body> 
     <header>
         <img src="resoc.jpg" alt="Logo de notre réseau social" />
         <nav id="menu">
-            <a href="">Actualités</a>
-            <a href="">Mur</a>
-            <a href="">Flux</a>
-            <a href="">Mots-clés</a>
-        </nav>
-        <nav id="user">
-            <a href="#">Profil</a>
-            <ul>
-                <li><a href="">Paramètres</a></li>
-                <li><a href="">Mes suiveurs</a></li>
-                <li><a href="">Mes abonnements</a></li>
-            </ul>
+            <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bienvenu sur votre réseau social préféré</h1>
         </nav>
     </header>
     <div id="wrapper">
-        <aside>
-            <h2>Présentation</h2>
-            <p>Bienvenu sur notre réseau social.</p>
-        </aside>
+        
         <main>
             <article>
                 <h2>Connexion</h2>
@@ -72,10 +58,6 @@ session_start()
                         <dd><input type='password' name='motpasse'></dd>
                     </dl>
                     <input type='submit'>
-                    
-                        <script>window.location.replace("wall.php?user_id=<?= $_SESSION['connected_id']?>")</script>
-                    
-
                 </form>
                 <p>
                     Pas de compte?
